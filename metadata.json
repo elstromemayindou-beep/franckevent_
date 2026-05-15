@@ -1,0 +1,13 @@
+{
+  "name": "Franck Events - Agence Événementielle Brazzaville",
+  "description": "Organisation d'événements d'exception à Brazzaville : mariages, anniversaires, rencontres professionnelles et location de matériel de décoration haut de gamme.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "Event Planning",
+    "Equipment Rental",
+    "Online Booking",
+    "Portfolio Gallery"
+  ]
+}

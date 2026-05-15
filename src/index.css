@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "Montserrat", sans-serif;
+}
+
+@layer base {
+  :root {
+    --bg-primary: #F5F2ED;
+    --text-primary: #1A1A1A;
+    --bg-secondary: #FFFFFF;
+    --text-secondary: #666666;
+    --border-color: #EEEEEE;
+  }
+
+  .dark {
+    --bg-primary: #0A0A0A;
+    --text-primary: #FFFFFF;
+    --bg-secondary: #1A1A1A;
+    --text-secondary: #A0A0A0;
+    --border-color: #262626;
+  }
+
+  body {
+    @apply bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans selection:bg-[#D4AF37] selection:text-white overflow-x-hidden transition-colors duration-500 antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply tracking-tight;
+  }
+}
+
+@layer utilities {
+  .luxury-blur {
+    @apply backdrop-blur-3xl bg-white/5 border border-white/10;
+  }
+
+  .text-reveal {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+
+  .text-reveal-inner {
+    display: inline-block;
+    animation: reveal 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+
+  @keyframes reveal {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(0); }
+  }
+
+  .mask-oval {
+    clip-path: ellipse(50% 50% at 50% 50%);
+  }
+
+  .noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .mask-fade-bottom {
+    mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+  }
+
+  .gold-gradient {
+    background: linear-gradient(135deg, #D4AF37 0%, #F5DEB3 50%, #B8860B 100%);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+  }
+}

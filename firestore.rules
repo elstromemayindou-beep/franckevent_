@@ -1,0 +1,168 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'elstromemayindou@gmail.com' ||
+        request.auth.token.email == 'ngakossofrancksimeon@icloud.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Gallery Collection ---
+    match /gallery/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+      
+      function isValidGalleryItem(data) {
+        return data.type in ['photo', 'tiktok', 'video'] &&
+               data.url is string && data.url.size() <= 2000000 &&
+               data.title is string && data.title.size() <= 200 &&
+               data.category is string && data.category.size() <= 100 &&
+               data.year is number &&
+               data.size in ['small', 'large', 'tall', 'wide'] &&
+               (data.get('videoUrl', '') == '' || (data.videoUrl is string && data.videoUrl.size() <= 1000));
+      }
+      
+      allow create: if isAdmin() && isValidGalleryItem(incoming());
+      allow update: if isAdmin() && isValidGalleryItem(incoming());
+    }
+
+    // --- Bookings Collection ---
+    match /bookings/{bookingId} {
+      allow read, update, delete: if isAdmin();
+      
+      function isValidBooking(data) {
+        return data.customerName is string && data.customerName.size() <= 100 &&
+               data.customerEmail is string && data.customerEmail.size() <= 200 &&
+               data.eventDate is string &&
+               data.serviceType is string &&
+               data.status in ['pending', 'confirmed', 'cancelled', 'completed'];
+      }
+      
+      allow create: if true && isValidBooking(incoming()) && 
+                       incoming().status == 'pending' &&
+                       incoming().createdAt == request.time;
+      allow update: if isAdmin() && isValidBooking(incoming()) &&
+                       incoming().createdAt == existing().createdAt;
+    }
+
+    // --- Blog Posts Collection ---
+    match /blog_posts/{postId} {
+      allow read: if true;
+      allow write: if isAdmin();
+      
+      function isValidBlogPost(data) {
+        return data.title is string && data.title.size() <= 200 &&
+               data.excerpt is string && data.excerpt.size() <= 500 &&
+               data.content is string &&
+               data.category is string &&
+               data.author is string;
+      }
+
+      allow create: if isAdmin() && isValidBlogPost(incoming()) && incoming().createdAt == request.time;
+      allow update: if isAdmin() && isValidBlogPost(incoming()) && incoming().createdAt == existing().createdAt;
+    }
+
+    // --- Calendar Events Collection ---
+    match /calendar_events/{eventId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- Messages Collection ---
+    match /messages/{messageId} {
+      allow create: if true;
+      allow read, write: if isAdmin();
+      
+      function isValidMessage(data) {
+        return data.name is string && data.name.size() <= 100 &&
+               data.email is string && data.email.size() <= 200 &&
+               data.subject is string && data.subject.size() <= 200 &&
+               data.message is string && data.message.size() <= 5000 &&
+               data.createdAt == request.time;
+      }
+      
+      allow create: if isValidMessage(incoming());
+    }
+
+    // --- Services Collection ---
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- Site Content Collection ---
+    match /site_content/{contentId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- Testimonials Collection ---
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if isAdmin();
+      
+      function isValidTestimonial(data) {
+        return data.author is string && data.author.size() <= 100 &&
+               data.event is string && data.event.size() <= 200 &&
+               data.text is string && data.text.size() <= 2000 &&
+               (data.get('videoUrl', '') == '' || (data.videoUrl is string && data.videoUrl.size() <= 500)) &&
+               data.rating is number && data.rating >= 1 && data.rating <= 5;
+      }
+      
+      allow create: if isAdmin() && isValidTestimonial(incoming()) && incoming().createdAt == request.time;
+      allow update: if isAdmin() && isValidTestimonial(incoming()) && incoming().createdAt == existing().createdAt;
+    }
+
+    // --- Newsletter Collection ---
+    match /newsletter/{subId} {
+      allow create: if true;
+      allow read, delete: if isAdmin();
+      
+      function isValidSubscriber(data) {
+        return data.email is string && data.email.size() <= 200 &&
+               data.createdAt == request.time;
+      }
+      
+      allow create: if isValidSubscriber(incoming());
+    }
+
+    // --- Settings Collection ---
+    match /settings/{setId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- Admins Collection ---
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

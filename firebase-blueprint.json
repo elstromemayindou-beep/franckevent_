@@ -1,0 +1,202 @@
+{
+  "entities": {
+    "GalleryItem": {
+      "title": "Gallery Item",
+      "description": "An item in the portfolio gallery (photo, tiktok, or video)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["photo", "tiktok", "video"] },
+        "url": { "type": "string", "format": "uri" },
+        "videoUrl": { "type": "string", "format": "uri" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "year": { "type": "number" },
+        "size": { "type": "string", "enum": ["small", "large", "tall", "wide"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["type", "url", "title", "category", "year", "size"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "An event booking request",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "customerEmail": { "type": "string", "format": "email" },
+        "eventDate": { "type": "string", "format": "date" },
+        "message": { "type": "string" },
+        "serviceType": { "type": "string" },
+        "price": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "cancelled", "completed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerName", "customerEmail", "eventDate", "serviceType", "status", "createdAt"]
+    },
+    "BlogPost": {
+      "title": "Blog Post",
+      "description": "A chronicle or news article",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "excerpt": { "type": "string" },
+        "content": { "type": "string" },
+        "image": { "type": "string", "format": "uri" },
+        "category": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "readTime": { "type": "string" },
+        "author": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "excerpt", "content", "category", "date", "author", "createdAt"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "A calendar event",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["Mariage", "Public", "Privé", "Pro"] },
+        "location": { "type": "string" }
+      },
+      "required": ["title", "date", "type", "location"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A contact form submission",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "subject", "message", "createdAt"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "An event service offered",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "string" },
+        "icon": { "type": "string" },
+        "image": { "type": "string", "format": "uri" },
+        "features": { "type": "array", "items": { "type": "string" } },
+        "order": { "type": "number" }
+      },
+      "required": ["title", "description", "price", "icon", "image", "features", "order"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "A customer testimonial (text or video)",
+      "type": "object",
+      "properties": {
+        "author": { "type": "string" },
+        "event": { "type": "string" },
+        "text": { "type": "string" },
+        "videoUrl": { "type": "string", "format": "uri" },
+        "rating": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["author", "event", "rating", "createdAt"]
+    },
+    "SiteContent": {
+      "title": "Site Content",
+      "description": "Dynamic text and images for various pages",
+      "type": "object",
+      "properties": {
+        "page": { "type": "string" },
+        "section": { "type": "string" },
+        "key": { "type": "string" },
+        "value": { "type": "string" },
+        "type": { "type": "string", "enum": ["text", "image", "url"] }
+      },
+      "required": ["page", "section", "key", "value", "type"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "An administrator record",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "addedAt"]
+    },
+    "Subscriber": {
+      "title": "Subscriber",
+      "description": "A newsletter subscriber",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "createdAt"]
+    },
+    "Settings": {
+      "title": "Global Settings",
+      "description": "Global site configuration",
+      "type": "object",
+      "properties": {
+        "instagram": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "facebook": { "type": "string" },
+        "contactEmail": { "type": "string", "format": "email" },
+        "address": { "type": "string" },
+        "metaTitle": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "gallery": {
+      "schema": "GalleryItem",
+      "description": "Collection of portfolio gallery items"
+    },
+    "bookings": {
+      "schema": "Booking",
+      "description": "Collection of event bookings"
+    },
+    "blog_posts": {
+      "schema": "BlogPost",
+      "description": "Collection of blog articles"
+    },
+    "calendar_events": {
+      "schema": "Event",
+      "description": "Public events calendar"
+    },
+    "messages": {
+      "schema": "Message",
+      "description": "Collection of contact form messages"
+    },
+    "services": {
+      "schema": "Service",
+      "description": "Collection of available event services"
+    },
+    "testimonials": {
+      "schema": "Testimonial",
+      "description": "Collection of customer reviews and video testimonials"
+    },
+    "site_content": {
+      "schema": "SiteContent",
+      "description": "Collection of dynamic site texts and assets"
+    },
+    "newsletter": {
+      "schema": "Subscriber",
+      "description": "Collection of newsletter subscriptions"
+    },
+    "settings": {
+      "schema": "Settings",
+      "description": "Global configuration document (use ID 'global')"
+    },
+    "admins": {
+      "schema": "Admin",
+      "description": "Collection of administrators"
+    }
+  }
+}
